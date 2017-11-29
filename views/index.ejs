@@ -1,0 +1,28 @@
+<html>
+<head>
+	<title>Auto Code Checker</title>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+</head>
+
+<body>
+
+	<textarea rows="30" cols="65" id="file"></textarea>
+	<textarea rows="30" cols="65" id="correct"></textarea>
+	<textarea rows="30" cols="65" id="doubt"></textarea>
+	<button id="submit">Submit</button>		
+
+	<script type="text/javascript">
+		$(document).ready(function() {
+			$('#submit').click(function() {
+				var file = $('#file').val();
+				var correct = $('#correct').val();
+				var doubt = $('#doubt').val();
+				$.post('/', {file: file, correct: correct, doubt: doubt}, function(data) {
+			        console.log(data);
+			    });
+			});
+		});
+	</script>
+</body>
+</html>
