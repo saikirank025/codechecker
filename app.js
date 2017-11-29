@@ -13,12 +13,27 @@ app.get('/', function(req, res) {
 });
 
 app.post('/', function(req, res) {
-	fs.writeFile("data/file.cpp", req.body['file']);
-	fs.writeFile("data/correct.cpp", req.body['correct']);
-	fs.writeFile("data/doubt.cpp", req.body['doubt']);	
+	fs.writeFileSync("data/file.cpp", req.body['file']);
+	fs.writeFileSync("data/correct.cpp", req.body['correct']);
+	fs.writeFileSync("data/doubt.cpp", req.body['doubt']);	
+	fs.writeFileSync('data/inputf.in','');
+	fs.writeFileSync('data/correct.txt','');
+	fs.writeFileSync('data/doubt.txt','');
 
-	var command = 'echo c++ file.cpp && echo a.exe >> inputf.in';
-	cmd.run(command)
+	var command = 'cd data && c++ file.cpp && a.exe >> inputf.in';
+	console.log(command);
+	cmd.run(command, {onDone: function() {
+		console.log('coming');
+		command = 'c++ correct.cpp && a.exe >> correct.txt < inputf.in';
+		command += 'c++ doubt.cpp && a.exe >> doubt.txt < inputf.in'; 
+		console.log(command);
+		cmd.run(command, {onDone: function() {
+			var correct = fs.readFileSync('data/correct.txt').toString();
+			var doubt = fs.readFileSync('data/doubt.txt').toString();
+			console.log(correct);
+			console.log(doubt);
+		}});
+	}});
 
 	res.render('index.ejs');
 });
