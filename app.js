@@ -11,29 +11,36 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.get('/', function(req, res) {
 	res.render('index.ejs');
 });
-
-app.post('/', function(req, res) {
-	fs.writeFileSync("data/file.cpp", req.body['file']);
-	fs.writeFileSync("data/correct.cpp", req.body['correct']);
-	fs.writeFileSync("data/doubt.cpp", req.body['doubt']);	
+function f(done) {
 	fs.writeFileSync('data/inputf.in','');
 	fs.writeFileSync('data/correct.txt','');
 	fs.writeFileSync('data/doubt.txt','');
 
 	var command = 'cd data && c++ file.cpp && a.exe >> inputf.in';
-	console.log(command);
-	cmd.run(command, {onDone: function() {
-		console.log('coming');
-		command = 'c++ correct.cpp && a.exe >> correct.txt < inputf.in';
-		command += 'c++ doubt.cpp && a.exe >> doubt.txt < inputf.in'; 
-		console.log(command);
-		cmd.run(command, {onDone: function() {
-			var correct = fs.readFileSync('data/correct.txt').toString();
-			var doubt = fs.readFileSync('data/doubt.txt').toString();
-			console.log(correct);
-			console.log(doubt);
-		}});
-	}});
+	cmd.get(command, function(data) {
+		command = 'cd data && c++ correct.cpp && a.exe >> correct.txt < inputf.in';
+		cmd.get(command, function(data) {
+			command = 'cd data && c++ doubt.cpp && a.exe >> doubt.txt < inputf.in';
+			cmd.get(command, function(data) {
+				var correct = fs.readFileSync('data/correct.txt').toString();
+				var doubt = fs.readFileSync('data/doubt.txt').toString();
+				if(correct != doubt) {
+					done.flag = false;
+				}
+			});	
+		});
+	});
+}
+
+app.post('/', function(req, res) {
+	fs.writeFileSync("data/file.cpp", req.body['file']);
+	fs.writeFileSync("data/correct.cpp", req.body['correct']);
+	fs.writeFileSync("data/doubt.cpp", req.body['doubt']);	
+	
+	var done = {flag: true};
+	while(done.flag) {
+		f(done);
+	}
 
 	res.render('index.ejs');
 });
