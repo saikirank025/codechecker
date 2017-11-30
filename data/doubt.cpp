@@ -2,7 +2,5 @@
 using namespace std;
 int main()
 {
-string str;
-cin>>str;
-cout<<str+" nodejs";
+cout<<"hello";
 }

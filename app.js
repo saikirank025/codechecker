@@ -11,7 +11,8 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.get('/', function(req, res) {
 	res.render('index.ejs');
 });
-function f(done) {
+
+function f() {
 	fs.writeFileSync('data/inputf.in','');
 	fs.writeFileSync('data/correct.txt','');
 	fs.writeFileSync('data/doubt.txt','');
@@ -24,8 +25,12 @@ function f(done) {
 			cmd.get(command, function(data) {
 				var correct = fs.readFileSync('data/correct.txt').toString();
 				var doubt = fs.readFileSync('data/doubt.txt').toString();
-				if(correct != doubt) {
-					done.flag = false;
+				if(correct == doubt) {
+					console.log("running....");
+					f();
+				}
+				else {
+					console.log("done!");
 				}
 			});	
 		});
@@ -35,13 +40,9 @@ function f(done) {
 app.post('/', function(req, res) {
 	fs.writeFileSync("data/file.cpp", req.body['file']);
 	fs.writeFileSync("data/correct.cpp", req.body['correct']);
-	fs.writeFileSync("data/doubt.cpp", req.body['doubt']);	
-	
-	var done = {flag: true};
-	while(done.flag) {
-		f(done);
-	}
+	fs.writeFileSync("data/doubt.cpp", req.body['doubt']);
 
+	f();
 	res.render('index.ejs');
 });
 

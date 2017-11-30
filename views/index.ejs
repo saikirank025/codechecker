@@ -10,7 +10,7 @@
 	<textarea rows="30" cols="65" id="file"></textarea>
 	<textarea rows="30" cols="65" id="correct"></textarea>
 	<textarea rows="30" cols="65" id="doubt"></textarea>
-	<button id="submit">Submit</button>		
+	<button id="submit">Submit</button>
 
 	<script type="text/javascript">
 		$(document).ready(function() {
@@ -18,9 +18,7 @@
 				var file = $('#file').val();
 				var correct = $('#correct').val();
 				var doubt = $('#doubt').val();
-				$.post('/', {file: file, correct: correct, doubt: doubt}, function(data) {
-			        console.log(data);
-			    });
+				$.post('/', {file: file, correct: correct, doubt: doubt});
 			});
 		});
 	</script>
